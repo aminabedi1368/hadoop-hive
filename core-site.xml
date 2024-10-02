@@ -1,0 +1,16 @@
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/opt/hadoop/tmp</value>
+        <description>A base for other temporary directories.</description>
+    </property>
+    <property>
+        <name>dfs.client.use.datanode.hostname</name>
+        <value>true</value>
+    </property>
+</configuration>
+
