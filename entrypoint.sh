@@ -26,9 +26,10 @@ hive --service metastore &
 hive --service hiveserver2 &
 
 # Watch for changes in mounted directory and import new files into HDFS
-inotifywait -m /mnt/import -e create -e moved_to |
-    while read path action file; do
-        hdfs dfs -put "$path$file" /user/hadoop/
+inotifywait -m /mnt/import -e create -e moved_to --format '%w%f' |
+    while read file; do
+        echo "Uploading $file to HDFS"
+        hdfs dfs -put "$file" /user/hadoop/
     done
 
 # Keep container running

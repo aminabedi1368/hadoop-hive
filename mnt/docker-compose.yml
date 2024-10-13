@@ -1,0 +1,70 @@
+version: '3'
+services:
+  hadoop-hive:
+    image: aminabedi1368/hadoop-hive:v1  # استفاده از داکر ایمیج آپلود شده
+    container_name: hadoop-hive-amin
+    volumes:
+      - ./data/hdfs:/data/hdfs
+      - ./mnt/import:/mnt/import
+      - ./mnt/java:/mnt/java
+    ports:
+      - "9870:9870"   # Hadoop NameNode WebUI
+      - "9864:9864"   # Hadoop DataNode
+      - "50070:50070"  # NameNode Web UI
+      - "8088:8088"   # YARN ResourceManager
+      - "8042:8042"   # YARN NodeManager
+      - "10000:10000" # HiveServer2
+      - "10002:10002" # Hive Metastore
+      - "9000:9000"   # HDFS Port
+    environment:
+      - HADOOP_HOME=/opt/hadoop
+      - HIVE_HOME=/opt/hive
+      - HDFS_NAMENODE_USER=root
+      - HDFS_DATANODE_USER=root
+      - HDFS_SECONDARYNAMENODE_USER=root
+      - YARN_RESOURCEMANAGER_USER=root
+      - YARN_NODEMANAGER_USER=root
+      - HIVE_METASTORE_URI=jdbc:mysql://mysql:3306/hive_db # Connection string to MySQL
+      - HIVE_METASTORE_USER=hive_user # MySQL user for Hive
+      - HIVE_METASTORE_PASSWORD=hive_password # MySQL password for Hive
+    stdin_open: true
+    tty: true
+    networks:
+      - hadoop_network
+      
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: hive_db
+      MYSQL_USER: hive_user
+      MYSQL_PASSWORD: hive_password
+    ports:
+      - "3306:3306" # Expose MySQL port
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hadoop_network
+
+  hue:
+    image: gethue/hue:latest
+    container_name: hue
+    ports:
+      - "8888:8888" # Hue web interface
+    environment:
+      - HUE_CONF_DIR=/hue/desktop/conf
+    volumes:
+      - ./hue:/hue/desktop/conf
+    networks:
+      - hadoop_network
+    depends_on:
+      - hive
+    restart: always
+    
+volumes:
+  mysql_data:
+
+networks:
+  hadoop_network:
+    driver: bridge

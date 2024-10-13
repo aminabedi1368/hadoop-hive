@@ -1,5 +1,16 @@
 <configuration>
     <property>
+        <name>hive.server2.thrift.port</name>
+        <value>10000</value>
+        <description>Port number of HiveServer2 Thrift Interface</description>
+    </property>
+
+    <property>
+        <name>hive.server2.thrift.bind.host</name>
+        <value>0.0.0.0</value> <!-- or hadoop-hive if it's set that way -->
+        <description>Host to bind HiveServer2 Thrift Interface</description>
+    </property>
+    <property>
         <name>javax.jdo.option.ConnectionURL</name>
         <value>jdbc:mysql://mysql:3306/hive_db</value>
     </property>
@@ -24,3 +35,6 @@
         <value>thrift://localhost:9083</value>
     </property>
 </configuration>
+
+
+
